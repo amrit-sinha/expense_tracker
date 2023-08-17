@@ -3,7 +3,9 @@ const require = createRequire(import.meta.url);
 import fs from 'fs';
 import Freecurrencyapi from '@everapi/freecurrencyapi-js';
 import {Product} from './model.js';
+const moment=require('moment');
 const csv=require('csv-parse');
+
 //import {crud} from './routes.js';
 
 const freecurrencyapi = new Freecurrencyapi('fca_live_bdEe90qdIuwXHpkYzxfV6crN6S8HSbyCdyD2ZS4a');
@@ -51,7 +53,7 @@ async function up(data) {
   for (let i = 1; i < data.length; ++i) {
     //await modifyData(i,data);
     const temp = await new Product({
-      Date: data[i][0],
+      Date: moment(data[i][0], "DD-MM-YYYY").toDate(),
       Description: data[i][1],
       Amount: data[i][2],
       Currency: "INR"

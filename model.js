@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 const csvSchema = mongoose.Schema({
 	Date: {
-    type: String,
+    type: Date,
     //required: true
   },
 	Description:{
