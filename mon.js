@@ -8,7 +8,7 @@ const csv=require('csv-parse');
 
 const freecurrencyapi = new Freecurrencyapi('fca_live_bdEe90qdIuwXHpkYzxfV6crN6S8HSbyCdyD2ZS4a');
 
-let arr=[];
+
 
 //const DATABASE="mongodb+srv://amritsinha:sinha3696@cluster0.vbkvyw4.mongodb.net/?retryWrites=true&w=majority";
 
@@ -19,19 +19,18 @@ fs.readFile(x, 'utf8', (err, csvData) => {
   } else {
     csv.parse(csvData, {
       delimiter: ','
-    }, (parseErr, data) => {
+    }, async (parseErr, data) => {
       if (parseErr) {
         console.error('Error parsing CSV:', parseErr);
       }
       else{
-        console.log('Successfully parsed data',data);
+        console.log('Successfully parsed data');
         
-        arr=data;
 // Modify the parsed data as needed
-const modifiedData = up();
-
+const modifiedData = await up(data)
+//console.log(modifiedData);
 // Insert the modified data into MongoDB using Mongoose
-Product.insertMany(modifiedData)
+ Product.insertMany(modifiedData)
   .then(() => {
     console.log('Data inserted into MongoDB');
   })
@@ -46,34 +45,33 @@ Product.insertMany(modifiedData)
 }
 
 
-async function up() {
-  console.log(arr.length);
-  for (let i = 1; i < arr.length; ++i) {
-    await modifyData(i);
-    const temp = new Product({
-      Date: arr[i][0],
-      Description: arr[i][1],
-      Amount: arr[i][2],
+async function up(data) {
+  console.log(data.length);
+  let list=[];
+  for (let i = 1; i < data.length; ++i) {
+    //await modifyData(i,data);
+    const temp = await new Product({
+      Date: data[i][0],
+      Description: data[i][1],
+      Amount: data[i][2],
       Currency: "INR"
     });
-    try {
-      await temp.save();
-    } catch (err) {
-      console.log('ERROR :', err);
-    }
+    //console.log(temp);
+   list.push(temp);
   }
+  return list;
 }
 
-async function modifyData(i) {
+/*async function modifyData(i,data) {
   try {
     const response = await freecurrencyapi.latest({
-      base_currency: arr[i][3],
+      base_currency: data[i][3],
       currencies: 'INR'
     });
-    arr[i][2] = response.data.INR * arr[i][2];
+    data[i][2] = response.data.INR * data[i][2];
   } catch (error) {
     console.error('Error modifying data:', error);
   }
-}
+}*/
 
 export {ProcessData};
