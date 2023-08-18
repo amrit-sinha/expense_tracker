@@ -1,25 +1,27 @@
 import axios from "axios";
 
-async function changeCurrVal(dateVal,fromCurr,initValue) {
+async function changeCurrVal(dateVal, fromCurr, initValue) {
   try {
+    // Convert the date object to ISO 8601 format
+    const isoDate = dateVal.toISOString();
+    // Extract only the YYYY-MM-DD part
+    const yyyyMMdd = isoDate.split('T')[0];
+    
     const config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `https://api.exchangerate.host/${dateVal}`,
+      url: `https://api.exchangerate.host/${yyyyMMdd}`,
       headers: {},
     };
     
     const response = await axios.request(config);
-    console.log(dateVal, response.data.rates.AED);
-    //const rates=JSON.parse(response.data.rates);
-    //const factor=rates.INR/rates.fromCurr;
-    const finalValue=0;//factor*initValue;
-    //console.log(finalValue);
+    console.log(yyyyMMdd, response.data.rates.AED);
+    
+    const finalValue = 0; // Calculate your final value here
     return finalValue;
-    //console.log(JSON.parse(response.data));
   } catch (error) {
     console.log(error);
   }
 }
 
-export {changeCurrVal};
+export { changeCurrVal };
