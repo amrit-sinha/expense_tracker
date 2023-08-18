@@ -15,9 +15,11 @@ async function changeCurrVal(dateVal, fromCurr, initValue) {
     };
     
     const response = await axios.request(config);
-    console.log(yyyyMMdd, response.data.rates.AED);
-    
-    const finalValue = 0; // Calculate your final value here
+    const INRValue=response.data.rates.INR;
+    const initCurrency=response.data.rates[fromCurr];
+    const factor=INRValue/initCurrency;
+    const finalValue =factor*initValue;
+    console.log(finalValue);
     return finalValue;
   } catch (error) {
     console.log(error);
