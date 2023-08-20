@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Upload</title>
+  <link rel="icon" href="../images/favicon-32x32.png" sizes="32x32" type="image/png">
+</head>
+<style>
+  .button {
+    background-color: #FFFFFF;
+    border: 2px solid #ADD8E6;
+    color: black;
+    padding: 8px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.2s;
+  }
+  .button:hover {
+  background-color: #ADD8E6; /* Cyan */
+  color: white;
+}
+</style>
+<body>
+  <h1>Upload CSV File ! </h1>
+  <input type="file" id="fileInput">
+  <button class="button" onclick="uploadFile()">Submit</button>
+  
+
+  <div id="status"></div>
+
+  <script src="upload.js"></script>
+</body>
+</html>
+

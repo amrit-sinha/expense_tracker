@@ -1,21 +1,14 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import fs from 'fs';
-import Freecurrencyapi from '@everapi/freecurrencyapi-js';
 import {Product} from './model.js';
 const moment=require('moment');
 const csv=require('csv-parse');
 import { changeCurrVal } from './exchange.js';
-//import {crud} from './routes.js';
 
-//const freecurrencyapi = new Freecurrencyapi('fca_live_bdEe90qdIuwXHpkYzxfV6crN6S8HSbyCdyD2ZS4a');
-
-
-
-//const DATABASE="mongodb+srv://amritsinha:sinha3696@cluster0.vbkvyw4.mongodb.net/?retryWrites=true&w=majority";
 
 async function ProcessData(x){
-fs.readFile(x, 'utf8', (err, csvData) => {
+fs.readFile(`./uploads/${x}`, 'utf8', (err, csvData) => {
   if (err) {
     console.error('Error reading CSV file:', err);
   } else {
@@ -29,7 +22,7 @@ fs.readFile(x, 'utf8', (err, csvData) => {
         console.log('Successfully parsed data');
         
 // Modify the parsed data as needed
-const modifiedData = await up(data)
+const modifiedData = await modifyDateAndCurrency(data)
 //console.log(modifiedData);
 // Insert the modified data into MongoDB using Mongoose
  Product.insertMany(modifiedData)
@@ -47,35 +40,22 @@ const modifiedData = await up(data)
 }
 
 
-async function up(data) {
+async function modifyDateAndCurrency(data) {
   console.log(data.length);
   let list=[];
+  const dateMap=new Map();
   for (let i = 1; i < data.length; ++i) {
-    //await modifyData(i,data);
     const dateVal=moment(data[i][0], "DD-MM-YYYY").toDate();
-    const amt=await changeCurrVal(dateVal,data[i][3],data[i][2]) ;
+    const amt=await changeCurrVal(dateVal,data[i][3],data[i][2],dateMap) ;
     const temp = await new Product({
       Date: dateVal,
       Description: data[i][1],
       Amount: amt,
       Currency: "INR"
     });
-    //console.log(temp);
    list.push(temp);
   }
   return list;
 }
-
-/*async function modifyData(i,data) {
-  try {
-    const response = await freecurrencyapi.latest({
-      base_currency: data[i][3],
-      currencies: 'INR'
-    });
-    data[i][2] = response.data.INR * data[i][2];
-  } catch (error) {
-    console.error('Error modifying data:', error);
-  }
-}*/
 
 export {ProcessData};

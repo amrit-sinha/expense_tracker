@@ -27,7 +27,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 app.use(express.static('public'));
 app.use(express.static('uploads'));
-//app.use('/', productRouter);
 
 const PORT = 3000;
 app.use(express.json());
@@ -42,7 +41,6 @@ app.get('/', function(req, res) {
 app.listen(PORT, () => {
   console.log(`Server and API app is running on port ${PORT}`);
 
-//app.use('/',app);
 
 app.use('/', productRouter);
 
